@@ -30,15 +30,13 @@ button:active{opacity:.7}
 .ic-btn{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid #d0cec8;border-radius:7px;background:#f5f4f0;color:#666;cursor:pointer;padding:0}
 .ic-btn:hover{background:#e8e6e2}
 
-/* 핵심 레이아웃 */
 .tile-row-wrap{
   display:flex;
-  align-items:stretch; /* 자식들이 모두 같은 높이 */
+  align-items:stretch;
   gap:6px;
 }
 .sh-btn{
   width:32px;min-width:32px;
-  /* height는 부모 stretch로 결정 — 명시 안 함 */
   display:flex;align-items:center;justify-content:center;
   font-size:18px;font-weight:700;
   border:1px solid #d0cec8;border-radius:7px;
@@ -50,33 +48,19 @@ button:active{opacity:.7}
 
 .tile-scroll-area{
   flex:1;
-  /* 부모 56px 중 스크롤바 12px 아래로 — overflow-x만 */
-  overflow-x: auto;
-  overflow-y: Hidden;
-  /* 스크롤바를 레이아웃 공간 안에서만 차지하게 */
+  overflow-x:auto;
+  overflow-y:hidden;
   scrollbar-gutter:stable;
 }
-.tile-scroll-area::-webkit-scrollbar{
-  height:22px;
-}
-
-.tile-scroll-area::-webkit-scrollbar-track{
-  background:transparent;
-}
-
-.tile-scroll-area::-webkit-scrollbar-thumb{
-  background:#c8c6c0;
-  border-radius:10px;
-
-  border:5px solid transparent;
-  background-clip:padding-box;
-}
+.tile-scroll-area::-webkit-scrollbar{height:22px;}
+.tile-scroll-area::-webkit-scrollbar-track{background:transparent;}
+.tile-scroll-area::-webkit-scrollbar-thumb{background:#c8c6c0;border-radius:10px;border:5px solid transparent;background-clip:padding-box;}
 
 .tile-inner{
   display:inline-flex;
   align-items:center;
   gap:3px;
-  height:44px; /* 타일 높이와 동일하게 고정 */
+  height:44px;
   padding:0 1px;
 }
 
@@ -98,7 +82,6 @@ button:active{opacity:.7}
 .tile.locked{background:#fff8e6;border:2px solid #f0c040;cursor:default}
 .tile.locked:hover{background:#fff8e6;border-color:#f0c040}
 .tile.empty-tile.locked{background:#fff8e6;border:2px dashed #f0c040}
-//.tile.lock-sel{cursor:pointer;outline:2px solid rgba(240,192,64,.5);outline-offset:1px}
 .tile.lock-sel:hover{background:#fff0c0;border-color:#f0c040}
 .tile.lock-on{background:#fff0c0;border:2px solid #e0a000;outline:2px solid rgba(240,192,64,.6);outline-offset:1px}
 
@@ -201,7 +184,7 @@ function parse(){
 }
 
 function resetAll(){
-  rows=[[],[],[]];colCount=0;inpEl.value='';;
+  rows=[[],[],[]];colCount=0;inpEl.value='';
   lockMode=false;updateLockUI();
   document.getElementById('tiles-wrap').innerHTML='';
   document.getElementById('result-card').style.display='none';
@@ -218,10 +201,10 @@ function updateLockUI(){
   else{btn.classList.remove('active');btn.textContent='🔒 고정하기';banner.style.display='none';}
 }
 function clearAllLocks(){
-  const s=saveScrolls();rows.forEach(r=>r.forEach(t=>{t.locked=false;}));render();restoreScrolls(s);
+  rows.forEach(r=>r.forEach(t=>{t.locked=false;}));render();
 }
 function toggleTileLock(ri,ci){
-  const s=saveScrolls();rows[ri][ci].locked=!rows[ri][ci].locked;render();restoreScrolls(s);
+  rows[ri][ci].locked=!rows[ri][ci].locked;render();
 }
 
 function shuffleFree(arr){
@@ -242,6 +225,7 @@ function shiftRow(ri,dir){
 }
 
 function render(){
+  const scrolls=saveScrolls();
   const wrap=document.getElementById('tiles-wrap');wrap.innerHTML='';
   const meta=[{label:'초성',badge:'b-cho'},{label:'중성',badge:'b-jung'},{label:'종성',badge:'b-jong'}];
   rows.forEach((row,ri)=>{
@@ -297,6 +281,7 @@ function render(){
     wrap.appendChild(card);
   });
   updateResult();
+  restoreScrolls(scrolls);
 }
 
 function updateResult(){
