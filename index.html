@@ -51,14 +51,26 @@ button:active{opacity:.7}
 .tile-scroll-area{
   flex:1;
   /* 부모 56px 중 스크롤바 12px 아래로 — overflow-x만 */
-  overflow-x:auto;
-  overflow-y:hidden;
+  overflow-x: auto;
+  overflow-y: Hidden;
   /* 스크롤바를 레이아웃 공간 안에서만 차지하게 */
   scrollbar-gutter:stable;
 }
-.tile-scroll-area::-webkit-scrollbar{height:8px}
-.tile-scroll-area::-webkit-scrollbar-track{background:transparent}
-.tile-scroll-area::-webkit-scrollbar-thumb{background:#c8c6c0;border-radius:4px}
+.tile-scroll-area::-webkit-scrollbar{
+  height:22px;
+}
+
+.tile-scroll-area::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+.tile-scroll-area::-webkit-scrollbar-thumb{
+  background:#c8c6c0;
+  border-radius:10px;
+
+  border:5px solid transparent;
+  background-clip:padding-box;
+}
 
 .tile-inner{
   display:inline-flex;
@@ -117,7 +129,7 @@ button:active{opacity:.7}
 <div class="card">
   <div class="sec-label">초중종성 입력</div>
   <textarea id="inp" rows="3" placeholder="초성&#10;중성&#10;종성" spellcheck="false"></textarea>
-  <div class="hint" id="guide">글씨를 입력한 후 적용 버튼을 눌러주세요.</div>
+
   <div class="btn-row">
     <button class="btn-apply" onclick="parse()">✓ 적용</button>
     <div class="sep"></div>
@@ -153,7 +165,7 @@ button:active{opacity:.7}
   <div class="sec-label">단어 → 초중종성 분해</div>
   <div class="decomp-row">
     <input class="decomp-inp" id="decomp-inp" type="text" placeholder="단어 또는 문장 입력" spellcheck="false">
-    <button class="btn-decomp" onclick="decompose()">↑ 분해 후 입력하기</button>
+    <button class="btn-decomp" onclick="decompose()">↑ 분해 후 적용하기</button>
    </div>
 <div class="decomp-preview" id="decomp-preview">분해 결과가 여기에 표시됩니다.</div>
 </div>
@@ -166,8 +178,6 @@ const JONG=['','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ'
 
 let rows=[[],[],[]],colCount=0,lockMode=false;
 const inpEl=document.getElementById('inp');
-const guideEl=document.getElementById('guide');
-inpEl.addEventListener('input',()=>{guideEl.style.opacity=inpEl.value.trim()===''?'1':'0';});
 
 function mkT(char,isEmpty){return{char,isEmpty,locked:false};}
 function sc(s){return[...s.trim()].filter(c=>c.trim()!=='');}
@@ -191,7 +201,7 @@ function parse(){
 }
 
 function resetAll(){
-  rows=[[],[],[]];colCount=0;inpEl.value='';guideEl.style.opacity='1';
+  rows=[[],[],[]];colCount=0;inpEl.value='';;
   lockMode=false;updateLockUI();
   document.getElementById('tiles-wrap').innerHTML='';
   document.getElementById('result-card').style.display='none';
@@ -328,7 +338,7 @@ function decompose(){
     '&nbsp;&nbsp;<span style="color:#888">중성: </span>'+jungs.join('')+
     '&nbsp;&nbsp;<span style="color:#888">종성: </span>'+(jongs.join('').trim()||'(없음)');
   inpEl.value=chos.join('')+'\n'+jungs.join('')+'\n'+jongs.join('');
-  guideEl.style.opacity='0';
+
   colCount=chos.length;
   rows=[chos,jungs,jongs].map(src=>Array.from({length:colCount},(_,i)=>src[i]?mkT(src[i],false):mkT('',true)));
   lockMode=false;updateLockUI();render();
