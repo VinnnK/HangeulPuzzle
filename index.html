@@ -6,20 +6,23 @@ html,body{font-family:Arial,sans-serif;background:#f5f4f0;color:#1a1a1a;min-heig
 .app{max-width:680px;margin:0 auto;padding:1.25rem 1rem;display:flex;flex-direction:column;gap:.85rem}
   #scaler{width:360px;transform-origin:top center;margin:0 auto;}
 .card{background:#fff;border:1px solid #d0cec8;border-radius:12px;padding:1rem 1.25rem}
-.card-gray{background:#f9f8f5;border:1px solid #d0cec8;border-radius:12px;padding:1rem 1.25rem}
 .sec-label{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem}
 textarea{width:100%;font-size:14px;font-family:monospace;padding:8px 10px;border:1px solid #c8c6c0;border-radius:8px;background:#f5f4f0;color:#1a1a1a;resize:none;outline:none;line-height:1.8}
 textarea:focus{border-color:#7f77dd;background:#fff}
 .hint{font-size:12px;color:#aaa;margin-top:6px;min-height:18px;transition:opacity .2s}
 .btn-row{display:flex;gap:6px;margin-top:.75rem;flex-wrap:wrap;align-items:center}
-button{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;font-size:13px;font-weight:500;border-radius:8px;cursor:pointer;transition:background .12s,opacity .12s;border:1px solid #c8c6c0;background:#fff;color:#1a1a1a;line-height:1}
+button{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;font-size:13px;font-weight:500;border-radius:8px;cursor:pointer;border:1px solid #c8c6c0;background:#fff;color:#1a1a1a;line-height:1;transition:background .1s,opacity .1s}
 button:hover{background:#f0eeec}
 button:active{opacity:.7}
 .btn-apply{background:#eeecfd;color:#3c3489;border-color:#b0a8e8}
 .btn-apply:hover{background:#dddaf8}
 .btn-shuffle-all{background:#e0f5ee;color:#085041;border-color:#9fe1cb}
-.btn-shuffle-all:hover{background:#c5edd e}
+.btn-shuffle-all:hover{background:#c5edde}
 .btn-reset{color:#888;border-color:#d0cec8}
+.btn-lock{background:#fff8e6;color:#7a5200;border-color:#f0c040}
+.btn-lock:hover{background:#fff0c0}
+.btn-lock.active{background:#f0c040;color:#5a3800;border-color:#c89000}
+.btn-lock.active:hover{background:#e0b030}
 .sep{width:1px;height:20px;background:#d0cec8;margin:0 2px;flex-shrink:0}
 .row-card{background:#fff;border:1px solid #d0cec8;border-radius:10px;padding:.75rem 1rem}
 .row-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.45rem}
@@ -33,12 +36,29 @@ button:active{opacity:.7}
 .tile-row{display:flex;align-items:center;gap:3px;overflow-x:auto;padding-bottom:2px}
 .sh-btn{min-width:28px;height:42px;display:flex;align-items:center;justify-content:center;font-size:16px;border:1px solid #d0cec8;border-radius:7px;background:#f5f4f0;color:#666;cursor:pointer;flex-shrink:0}
 .sh-btn:hover{background:#e8e6e2}
-.tile{width:42px;height:42px;min-width:42px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;border:1px solid #c8c6c0;border-radius:8px;background:#fff;color:#1a1a1a;cursor:grab;user-select:none;touch-action:none;flex-shrink:0;transition:border-color .1s,background .1s,opacity .15s}
-.tile:hover{border-color:#7f77dd;background:#f5f4ff}
-.tile.empty-tile{background:#f9f8f5;border:1px dashed #c8c6c0;color:#bbb;font-size:13px;cursor:grab}
+.sh-btn.disabled{opacity:.3;cursor:default;pointer-events:none}
+.tile{width:42px;height:42px;min-width:42px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;border:1px solid #c8c6c0;border-radius:8px;background:#fff;color:#1a1a1a;cursor:grab;user-select:none;touch-action:none;flex-shrink:0;transition:border-color .1s,background .1s,opacity .15s;position:relative}
+.tile:hover{border-color:#7f77dd}
+.tile.empty-tile{background:#f9f8f5;border:1px dashed #c8c6c0;color:transparent;font-size:13px;cursor:grab}
 .tile.empty-tile:hover{border-color:#7f77dd;background:#f0eefc}
 .tile.dragging{opacity:.3}
 .tile.drag-over{border-color:#534ab7;background:#eeecfd;border-width:2px}
+/* 고정 상태 */
+.tile.locked{background:#fff8e6;border:2px solid #f0c040;cursor:default}
+.tile.locked:hover{background:#fff8e6;border-color:#f0c040}
+.tile.locked::after{position:absolute;top:-6px;right:-6px;font-size:9px;line-height:1}
+.tile.empty-tile.locked{background:#fff8e6;border:2px dashed #f0c040}
+/* 고정 모드 선택 가능 */
+.tile.lock-selectable{cursor:pointer;box-shadow:0 0 0 2px #f0c04066}
+.tile.lock-selectable:hover{background:#fff0c0;border-color:#f0c040}
+.tile.lock-selected{background:#fff0c0;border:2px solid #e0a000;box-shadow:0 0 0 3px #f0c04066}
+/* 고정 모드 배너 */
+.lock-banner{background:#fff8e6;border:1px solid #f0c040;border-radius:10px;padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.lock-banner-text{font-size:13px;color:#7a5200;font-weight:500}
+.btn-lock-done{background:#f0c040;color:#5a3800;border-color:#c89000;font-weight:600}
+.btn-lock-done:hover{background:#e0b030}
+.btn-lock-clear{background:#fff;color:#a05000;border-color:#f0c040}
+.btn-lock-clear:hover{background:#fff0c0}
 .result-card{background:#fff;border:1px solid #d0cec8;border-radius:12px;padding:1rem 1.25rem}
 .result-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem}
 .result-text{font-size:26px;font-weight:500;letter-spacing:5px;color:#1a1a1a;word-break:break-all;line-height:1.4}
@@ -53,11 +73,10 @@ button:active{opacity:.7}
 .btn-decomp:hover{background:#dddaf8}
 .decomp-preview{margin-top:.6rem;font-family:monospace;font-size:13px;color:#666;line-height:1.8;padding:8px 10px;background:#fff;border:1px solid #e0deda;border-radius:8px;min-height:60px}
 .hr{height:1px;background:#d0cec8;margin:.1rem 0}
-.app-title{font-size:22px;font-weight:500;color:#2C2C2A;}
 </style>
 
 <div class="app">
-<div class="app-title">한글퍼즐</div>
+
 <div class="card">
   <div class="sec-label">초중종성 입력</div>
   <textarea id="inp" rows="3" placeholder="초성&#10;중성&#10;종성" spellcheck="false"></textarea>
@@ -67,7 +86,17 @@ button:active{opacity:.7}
     <div class="sep"></div>
     <button class="btn-shuffle-all" onclick="shuffleAll()">⇄ 전체 섞기</button>
     <div class="sep"></div>
+    <button class="btn-lock" id="btn-lock" onclick="toggleLockMode()">🔒 고정하기</button>
+    <div class="sep"></div>
     <button class="btn-reset" onclick="resetAll()">✕ 초기화</button>
+  </div>
+</div>
+
+<div id="lock-banner" style="display:none" class="lock-banner">
+  <span class="lock-banner-text">🔒 고정 모드 — 고정할 자모를 클릭하세요. 다시 클릭하면 해제됩니다.</span>
+  <div style="display:flex;gap:6px">
+    <button class="btn-lock-clear" onclick="clearAllLocks()">전체 해제</button>
+    <button class="btn-lock-done" onclick="toggleLockMode()">완료</button>
   </div>
 </div>
 
@@ -93,19 +122,19 @@ button:active{opacity:.7}
 </div>
 
 </div>
+
 <script>
 const CHO=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
 const JUNG=['ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'];
 const JONG=['','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ','ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ','ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
-const EMPTY='□';
 
+// 각 타일: {char, isEmpty, locked}
 let rows=[[],[],[]],colCount=0;
+let lockMode=false;
+
 const inpEl=document.getElementById('inp');
 const guideEl=document.getElementById('guide');
-
-inpEl.addEventListener('input',()=>{
-  guideEl.style.opacity=inpEl.value.trim()===''?'1':'0';
-});
+inpEl.addEventListener('input',()=>{guideEl.style.opacity=inpEl.value.trim()===''?'1':'0';});
 
 function sc(s){return[...s.trim()].filter(c=>c.trim()!=='');}
 
@@ -117,33 +146,74 @@ function parse(){
   colCount=Math.max(r0.length,r1.length,r2.length);
   if(!colCount)return;
   rows=[r0,r1,r2].map(src=>
-    Array.from({length:colCount},(_,i)=>src[i]!=null?{char:src[i],isEmpty:false}:{char:EMPTY,isEmpty:true})
+    Array.from({length:colCount},(_,i)=>src[i]!=null
+      ?{char:src[i],isEmpty:false,locked:false}
+      :{char:'',isEmpty:true,locked:false})
   );
+  lockMode=false;
+  updateLockUI();
   render();
 }
 
 function resetAll(){
-  rows=[[],[],[]];colCount=0;
-  inpEl.value='';guideEl.style.opacity='1';
+  rows=[[],[],[]];colCount=0;inpEl.value='';guideEl.style.opacity='1';
+  lockMode=false;updateLockUI();
   document.getElementById('tiles-wrap').innerHTML='';
   document.getElementById('result-card').style.display='none';
 }
 
-function shuffleArr(arr){
-  const idx=arr.map((_,i)=>i).sort(()=>Math.random()-.5);
-  const out=new Array(arr.length);
-  idx.forEach((si,i)=>{out[si]=arr[i];});
+function toggleLockMode(){
+  if(!colCount)return;
+  lockMode=!lockMode;
+  updateLockUI();
+  render();
+}
+
+function updateLockUI(){
+  const btn=document.getElementById('btn-lock');
+  const banner=document.getElementById('lock-banner');
+  if(lockMode){
+    btn.classList.add('active');btn.textContent='🔒 고정 중…';
+    banner.style.display='flex';
+  } else {
+    btn.classList.remove('active');btn.textContent='🔒 고정하기';
+    banner.style.display='none';
+  }
+}
+
+function clearAllLocks(){
+  rows.forEach(row=>row.forEach(t=>{t.locked=false;}));
+  render();
+}
+
+function toggleTileLock(ri,ci){
+  if(!lockMode)return;
+  rows[ri][ci].locked=!rows[ri][ci].locked;
+  render();
+}
+
+function shuffleFreeOnly(arr){
+  const freeIdx=[],freeVals=[];
+  arr.forEach((t,i)=>{if(!t.locked){freeIdx.push(i);freeVals.push(t);}});
+  const shuffled=[...freeVals].sort(()=>Math.random()-.5);
+  const out=[...arr];
+  freeIdx.forEach((idx,i)=>{out[idx]=shuffled[i];});
   return out;
 }
 
-function shuffleAll(){if(!colCount)return;rows=rows.map(r=>shuffleArr(r));render();}
-function shuffleRow(ri){rows[ri]=shuffleArr(rows[ri]);render();}
+function shuffleAll(){if(!colCount)return;rows=rows.map(r=>shuffleFreeOnly(r));render();}
+function shuffleRow(ri){rows[ri]=shuffleFreeOnly(rows[ri]);render();}
 
 function shiftRow(ri,dir){
-  const a=[...rows[ri]];
-  if(dir===-1){const f=a.shift();a.push(f);}
-  else{const l=a.pop();a.unshift(l);}
-  rows[ri]=a;render();
+  // 고정된 타일은 제자리 유지, 비고정 타일만 순환
+  const row=[...rows[ri]];
+  const freeIdx=row.map((t,i)=>!t.locked?i:-1).filter(i=>i>=0);
+  if(freeIdx.length<2){return;}
+  const freeVals=freeIdx.map(i=>row[i]);
+  if(dir===-1){const f=freeVals.shift();freeVals.push(f);}
+  else{const l=freeVals.pop();freeVals.unshift(l);}
+  freeIdx.forEach((idx,i)=>{row[idx]=freeVals[i];});
+  rows[ri]=row;render();
 }
 
 function render(){
@@ -151,46 +221,47 @@ function render(){
   wrap.innerHTML='';
   const meta=[{label:'초성',badge:'b-cho'},{label:'중성',badge:'b-jung'},{label:'종성',badge:'b-jong'}];
   rows.forEach((row,ri)=>{
-    const card=document.createElement('div');
-    card.className='row-card';
-    const head=document.createElement('div');
-    head.className='row-head';
-    const badge=document.createElement('span');
-    badge.className='badge '+meta[ri].badge;
-    badge.textContent=meta[ri].label;
+    const card=document.createElement('div');card.className='row-card';
+    const head=document.createElement('div');head.className='row-head';
+    const badge=document.createElement('span');badge.className='badge '+meta[ri].badge;badge.textContent=meta[ri].label;
     head.appendChild(badge);
-    const ctrl=document.createElement('div');
-    ctrl.className='row-controls';
-    const sb=document.createElement('button');
-    sb.className='ic-btn';sb.title='이 줄 섞기';sb.textContent='⇄';
+    const ctrl=document.createElement('div');ctrl.className='row-controls';
+    const sb=document.createElement('button');sb.className='ic-btn';sb.title='이 줄 섞기';sb.textContent='⇄';
     sb.onclick=()=>shuffleRow(ri);
-    ctrl.appendChild(sb);
-    head.appendChild(ctrl);
-    card.appendChild(head);
+    ctrl.appendChild(sb);head.appendChild(ctrl);card.appendChild(head);
 
     const tr=document.createElement('div');tr.className='tile-row';
-    const lb=document.createElement('div');lb.className='sh-btn';lb.textContent='‹';lb.onclick=()=>shiftRow(ri,-1);
+    const lb=document.createElement('div');lb.className='sh-btn'+(lockMode?' disabled':'');lb.textContent='‹';if(!lockMode)lb.onclick=()=>shiftRow(ri,-1);
     tr.appendChild(lb);
 
     for(let ci=0;ci<colCount;ci++){
       const tile=document.createElement('div');
       const val=row[ci];
-      if(val.isEmpty){
-        tile.className='tile empty-tile';
-        tile.textContent='';
-      } else {
-        tile.className='tile';
-        tile.textContent=val.char;
-      }
+
+      let cls='tile';
+      if(val.isEmpty)cls+=' empty-tile';
+      if(val.locked)cls+=' locked';
+      if(lockMode&&!val.locked)cls+=' lock-selectable';
+      if(lockMode&&val.locked)cls+=' lock-selected';
+      tile.className=cls;
+
+      tile.textContent=val.isEmpty?'':val.char;
       tile.dataset.row=ri;tile.dataset.col=ci;
-      setupDrag(tile,ri,ci);
+
+      if(lockMode){
+        tile.style.cursor='pointer';
+        tile.onclick=()=>toggleTileLock(ri,ci);
+      } else if(!val.locked){
+        setupDrag(tile,ri,ci);
+      } else {
+        tile.style.cursor='default';
+      }
       tr.appendChild(tile);
     }
 
-    const rb=document.createElement('div');rb.className='sh-btn';rb.textContent='›';rb.onclick=()=>shiftRow(ri,1);
+    const rb=document.createElement('div');rb.className='sh-btn'+(lockMode?' disabled':'');rb.textContent='›';if(!lockMode)rb.onclick=()=>shiftRow(ri,1);
     tr.appendChild(rb);
-    card.appendChild(tr);
-    wrap.appendChild(card);
+    card.appendChild(tr);wrap.appendChild(card);
   });
   updateResult();
 }
@@ -203,8 +274,8 @@ function updateResult(){
     if(c.isEmpty||j.isEmpty){res.push((c.isEmpty?'':c.char)+(j.isEmpty?'':j.char)+(k&&!k.isEmpty?k.char:''));continue;}
     const ci2=CHO.indexOf(c.char),ji=JUNG.indexOf(j.char);
     const ki=(!k||k.isEmpty)?0:JONG.indexOf(k.char);
-    if(ci2>=0&&ji>=0){res.push(String.fromCharCode(0xAC00+(ci2*21+ji)*28+(ki>=0?ki:0)));}
-    else{res.push(c.char+j.char+((!k||k.isEmpty)?'':k.char));}
+    if(ci2>=0&&ji>=0)res.push(String.fromCharCode(0xAC00+(ci2*21+ji)*28+(ki>=0?ki:0)));
+    else res.push(c.char+j.char+((!k||k.isEmpty)?'':k.char));
   }
   const rc=document.getElementById('result-card');
   if(colCount>0){rc.style.display='block';document.getElementById('result-text').textContent=res.join('');}
@@ -221,8 +292,7 @@ function copyResult(){
 }
 
 function decompose(){
-  const word=document.getElementById('decomp-inp').value.trim();
-  if(!word)return;
+  const word=document.getElementById('decomp-inp').value.trim();if(!word)return;
   const chos=[],jungs=[],jongs=[];
   [...word].forEach(ch=>{
     const code=ch.charCodeAt(0);
@@ -234,61 +304,55 @@ function decompose(){
   const choStr=chos.join(''),jungStr=jungs.join(''),jongStr=jongs.join('');
   document.getElementById('decomp-preview').innerHTML=
     '<span style="color:#888">초성: </span>'+choStr+
-    ' &nbsp;<span style="color:#888">중성: </span>'+jungStr+
-    ' &nbsp;<span style="color:#888">종성: </span>'+(jongStr.trim()||'(없음)');
+    '&nbsp;&nbsp;<span style="color:#888">중성: </span>'+jungStr+
+    '&nbsp;&nbsp;<span style="color:#888">종성: </span>'+(jongStr.trim()||'(없음)');
   inpEl.value=choStr+'\n'+jungStr+'\n'+jongStr;
   guideEl.style.opacity='0';
   colCount=chos.length;
   rows=[chos,jungs,jongs].map(src=>
-    Array.from({length:colCount},(_,i)=>src[i]?{char:src[i],isEmpty:false}:{char:EMPTY,isEmpty:true})
+    Array.from({length:colCount},(_,i)=>src[i]
+      ?{char:src[i],isEmpty:false,locked:false}
+      :{char:'',isEmpty:true,locked:false})
   );
-  render();
+  lockMode=false;updateLockUI();render();
 }
 
 let dragSrc=null,touchSrc=null,touchClone=null;
-
 function setupDrag(tile,ri,ci){
   tile.draggable=true;
-  tile.addEventListener('dragstart',e=>{
-    dragSrc={ri,ci};tile.classList.add('dragging');
-    e.dataTransfer.effectAllowed='move';
-  });
+  tile.addEventListener('dragstart',e=>{dragSrc={ri,ci};tile.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
   tile.addEventListener('dragend',()=>tile.classList.remove('dragging'));
   tile.addEventListener('dragover',e=>{e.preventDefault();tile.classList.add('drag-over');});
   tile.addEventListener('dragleave',()=>tile.classList.remove('drag-over'));
   tile.addEventListener('drop',e=>{
     e.preventDefault();tile.classList.remove('drag-over');
-    if(dragSrc&&dragSrc.ri===ri&&dragSrc.ci!==ci){
-      const tmp=rows[ri][ci];rows[ri][ci]=rows[ri][dragSrc.ci];rows[ri][dragSrc.ci]=tmp;render();
-    }
+    if(!dragSrc||dragSrc.ri!==ri||dragSrc.ci===ci)return;
+    if(rows[ri][ci].locked)return;
+    const tmp=rows[ri][ci];rows[ri][ci]=rows[ri][dragSrc.ci];rows[ri][dragSrc.ci]=tmp;render();
   });
   tile.addEventListener('touchstart',e=>{
+    if(lockMode)return;
     const t=e.touches[0];touchSrc={ri,ci};
     touchClone=tile.cloneNode(true);
-    Object.assign(touchClone.style,{
-      position:'fixed',left:(t.clientX-21)+'px',top:(t.clientY-21)+'px',
+    Object.assign(touchClone.style,{position:'fixed',left:(t.clientX-21)+'px',top:(t.clientY-21)+'px',
       width:'42px',height:'42px',opacity:'.85',pointerEvents:'none',zIndex:'9999',
       border:'2px solid #534ab7',borderRadius:'8px',background:'#fff',
-      display:'flex',alignItems:'center',justifyContent:'center',fontSize:'18px'
-    });
+      display:'flex',alignItems:'center',justifyContent:'center',fontSize:'18px'});
     document.body.appendChild(touchClone);tile.classList.add('dragging');e.preventDefault();
   },{passive:false});
   tile.addEventListener('touchmove',e=>{
     if(!touchClone)return;
-    const t=e.touches[0];
-    touchClone.style.left=(t.clientX-21)+'px';touchClone.style.top=(t.clientY-21)+'px';
-    e.preventDefault();
+    const t=e.touches[0];touchClone.style.left=(t.clientX-21)+'px';touchClone.style.top=(t.clientY-21)+'px';e.preventDefault();
   },{passive:false});
   tile.addEventListener('touchend',e=>{
     if(!touchClone)return;
-    const t=e.changedTouches[0];
-    touchClone.remove();touchClone=null;
+    const t=e.changedTouches[0];touchClone.remove();touchClone=null;
     const src=touchSrc;
     document.querySelectorAll('.tile').forEach(el=>el.classList.remove('dragging'));
     const el=document.elementFromPoint(t.clientX,t.clientY);
     if(el&&(el.classList.contains('tile')||el.classList.contains('empty-tile'))){
       const dri=parseInt(el.dataset.row),dci=parseInt(el.dataset.col);
-      if(!isNaN(dri)&&dri===src.ri&&dci!==src.ci){
+      if(!isNaN(dri)&&dri===src.ri&&dci!==src.ci&&!rows[src.ri][dci].locked){
         const tmp=rows[src.ri][dci];rows[src.ri][dci]=rows[src.ri][src.ci];rows[src.ri][src.ci]=tmp;render();
       }
     }
