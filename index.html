@@ -1,10 +1,10 @@
-<meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=0.8, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9, user-scalable=no">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{font-family:Arial,sans-serif;background:#f5f4f0;color:#1a1a1a;min-height:100%}
 .app{max-width:680px;margin:0 auto;padding:1.25rem 1rem;display:flex;flex-direction:column;gap:.85rem}
 .app-title{font-size:22px;font-weight:700;color:#1a1a1a;border-bottom:2px solid #e0deda;padding-bottom:.5rem}
-  #scaler{width:480px;transform-origin:top center;margin:0 auto;}
+  #scaler{width:500px;transform-origin:top center;margin:0 auto;}
 .card{background:#fff;border:1px solid #d0cec8;border-radius:12px;padding:1rem 1.25rem}
 .sec-label{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem}
 textarea{width:100%;font-size:14px;font-family:monospace;padding:8px 10px;border:1px solid #c8c6c0;border-radius:8px;background:#f5f4f0;color:#1a1a1a;resize:none;outline:none;line-height:1.8}
@@ -52,9 +52,9 @@ button:active{opacity:.7}
   overflow-y:hidden;
   scrollbar-gutter:stable;
 }
-.tile-scroll-area::-webkit-scrollbar{height:22px;}
+.tile-scroll-area::-webkit-scrollbar{height:30px;}
 .tile-scroll-area::-webkit-scrollbar-track{background:transparent;}
-.tile-scroll-area::-webkit-scrollbar-thumb{background:#c8c6c0;border-radius:10px;border:5px solid transparent;background-clip:padding-box;}
+.tile-scroll-area::-webkit-scrollbar-thumb{background:#c8c6c0;border-radius:20px;border:6px solid transparent;background-clip:padding-box;}
 
 .tile-inner{
   display:inline-flex;
@@ -145,7 +145,7 @@ button:active{opacity:.7}
 <div class="hr"></div>
 
 <div class="decomp-card">
-  <div class="sec-label">단어 → 초중종성 분해</div>
+  <div class="sec-label">초중종성 분해</div>
   <div class="decomp-row">
     <input class="decomp-inp" id="decomp-inp" type="text" placeholder="단어 또는 문장 입력" spellcheck="false">
     <button class="btn-decomp" onclick="decompose()">↑ 분해 후 적용하기</button>
