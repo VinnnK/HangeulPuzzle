@@ -4,7 +4,7 @@
 html,body{font-family:Arial,sans-serif;background:#f5f4f0;color:#1a1a1a;min-height:100%}
 .app{max-width:680px;margin:0 auto;padding:1.25rem 1rem;display:flex;flex-direction:column;gap:.85rem}
 .app-title{font-size:22px;font-weight:700;color:#1a1a1a;border-bottom:2px solid #e0deda;padding-bottom:.5rem}
-  #scaler{width:500px;transform-origin:top center;margin:0 auto;}
+#scaler{width:500px;transform-origin:top center;margin:0 auto;}
 .card{background:#fff;border:1px solid #d0cec8;border-radius:12px;padding:1rem 1.25rem}
 .sec-label{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem}
 textarea{width:100%;font-size:14px;font-family:monospace;padding:8px 10px;border:1px solid #c8c6c0;border-radius:8px;background:#f5f4f0;color:#1a1a1a;resize:none;outline:none;line-height:1.8}
@@ -30,11 +30,7 @@ button:active{opacity:.7}
 .ic-btn{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;border:1px solid #d0cec8;border-radius:7px;background:#f5f4f0;color:#666;cursor:pointer;padding:0}
 .ic-btn:hover{background:#e8e6e2}
 
-.tile-row-wrap{
-  display:flex;
-  align-items:stretch;
-  gap:6px;
-}
+.tile-row-wrap{display:flex;align-items:stretch;gap:6px;}
 .sh-btn{
   width:32px;min-width:32px;
   display:flex;align-items:center;justify-content:center;
@@ -52,7 +48,7 @@ button:active{opacity:.7}
   overflow-y:hidden;
   scrollbar-gutter:stable;
 }
-.tile-scroll-area::-webkit-scrollbar{height:28px;}
+.tile-scroll-area::-webkit-scrollbar{height:26px;}
 .tile-scroll-area::-webkit-scrollbar-track{background:transparent;}
 .tile-scroll-area::-webkit-scrollbar-thumb{background:#c8c6c0;border-radius:20px;border:6px solid transparent;background-clip:padding-box;}
 
@@ -70,7 +66,8 @@ button:active{opacity:.7}
   font-size:18px;font-weight:500;
   border:1px solid #c8c6c0;border-radius:8px;
   background:#fff;color:#1a1a1a;
-  cursor:grab;user-select:none;touch-action:none;
+  cursor:grab;user-select:none;
+  touch-action:pan-x pan-y; /* 기본은 스크롤 허용 */
   flex-shrink:0;
   transition:border-color .1s,background .1s,opacity .15s;
 }
@@ -84,6 +81,7 @@ button:active{opacity:.7}
 .tile.empty-tile.locked{background:#fff8e6;border:2px dashed #f0c040}
 .tile.lock-sel:hover{background:#fff0c0;border-color:#f0c040}
 .tile.lock-on{background:#fff0c0;border:2px solid #e0a000;outline:2px solid rgba(240,192,64,.6);outline-offset:1px}
+.tile.press-ready{border-color:#7f77dd;background:#f5f4ff;} /* 길게 누르는 중 시각 피드백 */
 
 .lock-banner{background:#fff8e6;border:1px solid #f0c040;border-radius:10px;padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
 .lock-banner-text{font-size:13px;color:#7a5200;font-weight:500}
@@ -112,7 +110,6 @@ button:active{opacity:.7}
 <div class="card">
   <div class="sec-label">초중종성 입력</div>
   <textarea id="inp" rows="3" placeholder="초성&#10;중성&#10;종성" spellcheck="false"></textarea>
-
   <div class="btn-row">
     <button class="btn-apply" onclick="parse()">✓ 적용</button>
     <div class="sep"></div>
@@ -149,8 +146,8 @@ button:active{opacity:.7}
   <div class="decomp-row">
     <input class="decomp-inp" id="decomp-inp" type="text" placeholder="단어 또는 문장 입력" spellcheck="false">
     <button class="btn-decomp" onclick="decompose()">↑ 분해 후 적용하기</button>
-   </div>
-<div class="decomp-preview" id="decomp-preview">분해 결과가 여기에 표시됩니다.</div>
+  </div>
+  <div class="decomp-preview" id="decomp-preview">분해 결과가 여기에 표시됩니다.</div>
 </div>
 </div>
 
@@ -253,9 +250,9 @@ function render(){
       const val=row[ci];
       const tile=document.createElement('div');
       let cls='tile'+(val.isEmpty?' empty-tile':'');
-      if(val.locked) cls+=' locked';
-      else if(lockMode) cls+=' lock-sel';
-      if(lockMode&&val.locked) cls+=' lock-on';
+      if(val.locked)cls+=' locked';
+      else if(lockMode)cls+=' lock-sel';
+      if(lockMode&&val.locked)cls+=' lock-on';
       tile.className=cls;
       tile.textContent=val.isEmpty?'':val.char;
       tile.dataset.row=ri;tile.dataset.col=ci;
@@ -323,13 +320,13 @@ function decompose(){
     '&nbsp;&nbsp;<span style="color:#888">중성: </span>'+jungs.join('')+
     '&nbsp;&nbsp;<span style="color:#888">종성: </span>'+(jongs.join('').trim()||'(없음)');
   inpEl.value=chos.join('')+'\n'+jungs.join('')+'\n'+jongs.join('');
-
   colCount=chos.length;
   rows=[chos,jungs,jongs].map(src=>Array.from({length:colCount},(_,i)=>src[i]?mkT(src[i],false):mkT('',true)));
   lockMode=false;updateLockUI();render();
 }
 
 let dragSrc=null,touchSrc=null,touchClone=null;
+
 function setupDrag(tile,ri,ci){
   tile.draggable=true;
   tile.addEventListener('dragstart',e=>{dragSrc={ri,ci};tile.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
@@ -342,32 +339,62 @@ function setupDrag(tile,ri,ci){
     const tmp=rows[ri][ci];rows[ri][ci]=rows[ri][dragSrc.ci];rows[ri][dragSrc.ci]=tmp;render();
   });
 
-  let tStartX=0,tStartY=0,tDragging=false;
+  let longPressTimer=null;
+  let tStartX=0,tStartY=0;
+
   tile.addEventListener('touchstart',e=>{
     if(lockMode)return;
-    const t=e.touches[0];tStartX=t.clientX;tStartY=t.clientY;tDragging=false;touchSrc={ri,ci};
+    const t=e.touches[0];
+    tStartX=t.clientX;tStartY=t.clientY;
+    touchSrc={ri,ci};
+
+    // 150ms 길게 누르면 드래그 시작
+    longPressTimer=setTimeout(()=>{
+      longPressTimer=null;
+      tile.classList.remove('press-ready');
+      touchClone=tile.cloneNode(true);
+      Object.assign(touchClone.style,{
+        position:'fixed',width:'44px',height:'44px',
+        left:(tStartX-22)+'px',top:(tStartY-22)+'px',
+        opacity:'.85',pointerEvents:'none',zIndex:'9999',
+        border:'2px solid #534ab7',borderRadius:'8px',background:'#fff',
+        display:'flex',alignItems:'center',justifyContent:'center',fontSize:'18px'
+      });
+      document.body.appendChild(touchClone);
+      tile.classList.add('dragging');
+      // 드래그 확정 후 스크롤 막기
+      tile.style.touchAction='none';
+    },150);
+
+    tile.classList.add('press-ready');
   },{passive:true});
+
   tile.addEventListener('touchmove',e=>{
     if(lockMode||!touchSrc)return;
     const t=e.touches[0];
-    const dx=t.clientX-tStartX,dy=t.clientY-tStartY;
-    if(!tDragging){
-      if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>6)return;
-      if(Math.abs(dx)<=8)return;
-      tDragging=true;
-      touchClone=tile.cloneNode(true);
-      Object.assign(touchClone.style,{position:'fixed',width:'44px',height:'44px',
-        left:(tStartX-22)+'px',top:(tStartY-22)+'px',opacity:'.85',pointerEvents:'none',zIndex:'9999',
-        border:'2px solid #534ab7',borderRadius:'8px',background:'#fff',
-        display:'flex',alignItems:'center',justifyContent:'center',fontSize:'18px'});
-      document.body.appendChild(touchClone);
-      tile.classList.add('dragging');
+    const dx=Math.abs(t.clientX-tStartX),dy=Math.abs(t.clientY-tStartY);
+
+    // 드래그 확정 전에 많이 움직이면 longPress 취소 → 스크롤로 처리
+    if(longPressTimer&&(dx>6||dy>6)){
+      clearTimeout(longPressTimer);longPressTimer=null;
+      tile.classList.remove('press-ready');
+      touchSrc=null;
+      return;
     }
-    if(touchClone){touchClone.style.left=(t.clientX-22)+'px';touchClone.style.top=(t.clientY-22)+'px';e.preventDefault();}
+
+    if(!touchClone)return; // 아직 드래그 미확정
+    touchClone.style.left=(t.clientX-22)+'px';
+    touchClone.style.top=(t.clientY-22)+'px';
+    e.preventDefault();
   },{passive:false});
+
   tile.addEventListener('touchend',e=>{
+    clearTimeout(longPressTimer);longPressTimer=null;
+    tile.classList.remove('press-ready');
+    tile.style.touchAction=''; // 복원
+
     if(!touchSrc)return;
-    if(tDragging&&touchClone){
+    if(touchClone){
       touchClone.remove();touchClone=null;
       document.querySelectorAll('.tile').forEach(el=>el.classList.remove('dragging'));
       const t=e.changedTouches[0];
@@ -379,7 +406,16 @@ function setupDrag(tile,ri,ci){
         }
       }
     }
-    touchSrc=null;tDragging=false;
+    touchSrc=null;
+  },{passive:true});
+
+  tile.addEventListener('touchcancel',()=>{
+    clearTimeout(longPressTimer);longPressTimer=null;
+    tile.classList.remove('press-ready');
+    tile.style.touchAction='';
+    if(touchClone){touchClone.remove();touchClone=null;}
+    document.querySelectorAll('.tile').forEach(el=>el.classList.remove('dragging'));
+    touchSrc=null;
   },{passive:true});
 }
 </script>
